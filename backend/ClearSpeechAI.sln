@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClearSpeechAI.Core", "ClearSpeechAI.Core\ClearSpeechAI.Core.csproj", "{7DD9A4FC-3D71-49C1-A7DA-647E6337C671}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClearSpeechAI.Infrastructure", "ClearSpeechAI.Infrastructure\ClearSpeechAI.Infrastructure.csproj", "{1E1C502E-C7CD-4265-A798-3545CEBC9533}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClearSpeechAI.API", "ClearSpeechAI.API\ClearSpeechAI.API.csproj", "{93776DB6-6316-457F-A6B1-AAABE5C2DBB2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7DD9A4FC-3D71-49C1-A7DA-647E6337C671}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DD9A4FC-3D71-49C1-A7DA-647E6337C671}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DD9A4FC-3D71-49C1-A7DA-647E6337C671}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DD9A4FC-3D71-49C1-A7DA-647E6337C671}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E1C502E-C7CD-4265-A798-3545CEBC9533}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E1C502E-C7CD-4265-A798-3545CEBC9533}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E1C502E-C7CD-4265-A798-3545CEBC9533}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E1C502E-C7CD-4265-A798-3545CEBC9533}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93776DB6-6316-457F-A6B1-AAABE5C2DBB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93776DB6-6316-457F-A6B1-AAABE5C2DBB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93776DB6-6316-457F-A6B1-AAABE5C2DBB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93776DB6-6316-457F-A6B1-AAABE5C2DBB2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
