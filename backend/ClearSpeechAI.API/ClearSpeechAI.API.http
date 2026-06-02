@@ -1,0 +1,6 @@
+@ClearSpeechAI.API_HostAddress = http://localhost:5143
+
+GET {{ClearSpeechAI.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
