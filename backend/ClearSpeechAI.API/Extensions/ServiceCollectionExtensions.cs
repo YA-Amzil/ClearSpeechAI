@@ -1,4 +1,6 @@
-#pragma warning disable SKEXP0001, SKEXP0010
+#pragma warning disable SKEXP0001 // IAudioToTextService is experimental
+#pragma warning disable SKEXP0010 // AddOpenAIAudioToText is experimental
+
 using ClearSpeechAI.API.Configuration;
 using ClearSpeechAI.Core.Interfaces;
 using ClearSpeechAI.Infrastructure.OpenAI;

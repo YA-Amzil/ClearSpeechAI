@@ -1,5 +1,4 @@
 using ClearSpeechAI.API.Extensions;
-#pragma warning disable SKEXP0001, SKEXP0010
 using ClearSpeechAI.API.Middleware;
 using ClearSpeechAI.Infrastructure.Logging;
 using Serilog;
@@ -11,21 +10,16 @@ try
     Log.Information("Starting ClearSpeechAI API...");
 
     var builder = WebApplication.CreateBuilder(args);
-    // Serilog is configured manually via SerilogConfiguration.Configure();
-    // The Host.UseSerilog() extension is optional — remove it to avoid analyzer/package issues
 
+    builder.Host.UseSerilog();
+
+    // Controllers
     builder.Services.AddControllers();
-    builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen(c =>
-    {
-        c.SwaggerDoc("v1", new()
-        {
-            Title       = "ClearSpeechAI API",
-            Version     = "v1",
-            Description = "Audio-to-text transcription powered by OpenAI Whisper via Semantic Kernel"
-        });
-    });
 
+    // Nieuwe .NET 10 OpenAPI pipeline
+    builder.Services.AddOpenApi();
+
+    // CORS
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowFrontend", policy =>
@@ -38,23 +32,29 @@ try
         });
     });
 
+    // Jouw DI-registraties
     builder.Services.AddClearSpeechAI(builder.Configuration);
 
     var app = builder.Build();
 
     if (app.Environment.IsDevelopment())
     {
-        app.UseSwagger();
-        app.UseSwaggerUI(c =>
+        // Genereert automatisch /openapi/v1.json
+        app.MapOpenApi();
+
+        // Nieuwe Swagger UI
+        app.UseSwaggerUI(options =>
         {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "ClearSpeechAI v1");
-            c.RoutePrefix = "swagger";
+            options.SwaggerEndpoint("/openapi/v1.json", "ClearSpeechAI API v1");
+            options.RoutePrefix = "swagger";
         });
     }
 
     app.UseMiddleware<ExceptionHandlingMiddleware>();
     app.UseCors("AllowFrontend");
     app.UseAuthorization();
+
+    // Controllers mappen
     app.MapControllers();
 
     app.Run();

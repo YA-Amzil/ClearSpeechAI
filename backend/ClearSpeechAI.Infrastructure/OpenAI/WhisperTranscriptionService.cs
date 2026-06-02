@@ -1,4 +1,6 @@
-using System.Diagnostics.CodeAnalysis;
+#pragma warning disable SKEXP0001 // IAudioToTextService is experimental
+#pragma warning disable SKEXP0010 // OpenAIAudioToTextExecutionSettings is experimental
+
 using ClearSpeechAI.Core.DTOs;
 using ClearSpeechAI.Core.Interfaces;
 using Microsoft.SemanticKernel;
@@ -8,34 +10,31 @@ using Serilog;
 
 namespace ClearSpeechAI.Infrastructure.OpenAI;
 
-[Experimental("SKEXP0001")]
 public class WhisperTranscriptionService : ITranscriptionService
 {
     private readonly IAudioToTextService _audioToTextService;
-    private readonly ILogger _logger;
 
-
-    public WhisperTranscriptionService(IAudioToTextService audioToTextService, ILogger logger)
+    public WhisperTranscriptionService(IAudioToTextService audioToTextService)
     {
         _audioToTextService = audioToTextService;
-        _logger = logger;
     }
 
     public async Task<TranscriptionResponse> TranscribeAsync(
         TranscriptionRequest request,
         CancellationToken cancellationToken = default)
     {
-        _logger.Information("Starting transcription for file: {FileName}, language: {Language}", 
-            request.FileName, request.Language);
+        Log.ForContext<WhisperTranscriptionService>()
+            .Information("Starting transcription for file: {FileName}, language: {Language}",
+                request.FileName, request.Language);
 
         try
         {
             var executionSettings = new OpenAIAudioToTextExecutionSettings(request.FileName)
             {
-                Language      = request.Language,
+                Language = request.Language,
                 ResponseFormat = request.ResponseFormat,
-                Temperature   = request.Temperature,
-                Prompt        = request.Prompt
+                Temperature = request.Temperature,
+                Prompt = request.Prompt
             };
 
             var audioContent = new AudioContent(
@@ -45,22 +44,24 @@ public class WhisperTranscriptionService : ITranscriptionService
             var result = await _audioToTextService.GetTextContentAsync(
                 audioContent, executionSettings, cancellationToken: cancellationToken);
 
-            _logger.Information("Transcription completed successfully for: {FileName}", request.FileName);
+            Log.ForContext<WhisperTranscriptionService>()
+                .Information("Transcription completed successfully for: {FileName}", request.FileName);
 
             return new TranscriptionResponse
             {
-                Success  = true,
-                Text     = result.Text,
+                Success = true,
+                Text = result.Text,
                 Language = request.Language,
-                Format   = request.ResponseFormat
+                Format = request.ResponseFormat
             };
         }
         catch (Exception ex)
         {
-            _logger.Error(ex, "Transcription failed for file: {FileName}", request.FileName);
+            Log.ForContext<WhisperTranscriptionService>()
+                .Error(ex, "Transcription failed for file: {FileName}", request.FileName);
             return new TranscriptionResponse
             {
-                Success      = false,
+                Success = false,
                 ErrorMessage = ex.Message
             };
         }
@@ -70,14 +71,14 @@ public class WhisperTranscriptionService : ITranscriptionService
     {
         return Path.GetExtension(fileName).ToLowerInvariant() switch
         {
-            ".wav"  => "audio/wav",
-            ".mp3"  => "audio/mpeg",
-            ".mp4"  => "audio/mp4",
-            ".m4a"  => "audio/m4a",
-            ".ogg"  => "audio/ogg",
+            ".wav" => "audio/wav",
+            ".mp3" => "audio/mpeg",
+            ".mp4" => "audio/mp4",
+            ".m4a" => "audio/m4a",
+            ".ogg" => "audio/ogg",
             ".flac" => "audio/flac",
             ".webm" => "audio/webm",
-            _       => null
+            _ => null
         };
     }
 }

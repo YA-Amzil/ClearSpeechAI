@@ -16,10 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\ClearSpeechAI.Core\ClearSpeechAI.Core.csproj" />
       <ProjectReference Include="..\ClearSpeechAI.Infrastructure\ClearSpeechAI.Infrastructure.csproj" />
     </ItemGroup>
