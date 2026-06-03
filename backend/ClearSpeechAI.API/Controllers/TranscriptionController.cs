@@ -60,17 +60,27 @@ public class TranscriptionController : ControllerBase
             Prompt         = model.Prompt
         };
 
-        _logger.LogInformation("Transcription request received for file: {FileName}", model.AudioFile.FileName);
-
         var response = await _transcriptionService.TranscribeAsync(request, cancellationToken);
 
         if (!response.Success)
         {
-            _logger.LogWarning("Transcription failed for file: {FileName} — {Error}", model.AudioFile.FileName, response.ErrorMessage);
-            return StatusCode(GetStatusCode(response.ErrorMessage), response);
+            _logger.LogWarning("OpenAI verification failed — {Error}", response.ErrorMessage);
+            return StatusCode(GetStatusCode(response.ErrorMessage), new
+            {
+                success = false,
+                verified = false,
+                error = response.ErrorMessage,
+                checkedAt = response.ProcessedAt
+            });
         }
 
-        return Ok(response);
+        return Ok(new
+        {
+            success = true,
+            verified = true,
+            message = "OpenAI API key and transcription quota look OK.",
+            checkedAt = response.ProcessedAt
+        });
     }
 
     [HttpGet("health")]
