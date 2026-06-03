@@ -28,8 +28,10 @@ public class TranscriptionController : ControllerBase
 
     [HttpPost("transcribe")]
     [RequestSizeLimit(26_214_400)]
-    [ProducesResponseType(typeof(TranscriptionResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status402PaymentRequired)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> TranscribeAsync(
         [FromForm] TranscribeRequestModel model,
