@@ -3,7 +3,6 @@
 
 using ClearSpeechAI.Core.DTOs;
 using ClearSpeechAI.Core.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.AudioToText;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
@@ -15,7 +14,7 @@ public class WhisperTranscriptionService : ITranscriptionService
 {
     private readonly IAudioToTextService _audioToTextService;
 
-    public WhisperTranscriptionService(IAudioToTextService audioToTextService, IConfiguration configuration)
+    public WhisperTranscriptionService(IAudioToTextService audioToTextService)
     {
         _audioToTextService = audioToTextService;
     }
