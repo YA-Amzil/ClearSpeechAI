@@ -2,7 +2,6 @@ using ClearSpeechAI.API.Extensions;
 using ClearSpeechAI.Infrastructure.Logging;
 using Microsoft.AspNetCore.Http.Features;
 using Serilog;
-using ClearSpeechAI.API.Middleware;
 
 SerilogConfiguration.Configure();
 DotEnvLoader.Load();
@@ -53,7 +52,6 @@ try
         });
     }
 
-    app.UseMiddleware<ExceptionHandlingMiddleware>();
     app.UseCors("AllowFrontend");
     app.UseAuthorization();
 
