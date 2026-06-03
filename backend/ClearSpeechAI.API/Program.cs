@@ -1,9 +1,11 @@
 using ClearSpeechAI.API.Extensions;
-using ClearSpeechAI.API.Middleware;
 using ClearSpeechAI.Infrastructure.Logging;
+using Microsoft.AspNetCore.Http.Features;
 using Serilog;
+using ClearSpeechAI.API.Middleware;
 
 SerilogConfiguration.Configure();
+DotEnvLoader.Load();
 
 try
 {
@@ -13,13 +15,17 @@ try
 
     builder.Host.UseSerilog();
 
-    // Controllers
     builder.Services.AddControllers();
 
-    // Nieuwe .NET 10 OpenAPI pipeline
     builder.Services.AddOpenApi();
+    
+    builder.Services.Configure<FormOptions>(options =>
+    {
+        options.ValueCountLimit = int.MaxValue;
+        options.MultipartBodyLengthLimit = long.MaxValue;
+        options.MultipartHeadersLengthLimit = int.MaxValue;
+    });
 
-    // CORS
     builder.Services.AddCors(options =>
     {
         options.AddPolicy("AllowFrontend", policy =>
@@ -32,17 +38,14 @@ try
         });
     });
 
-    // Jouw DI-registraties
     builder.Services.AddClearSpeechAI(builder.Configuration);
 
     var app = builder.Build();
 
     if (app.Environment.IsDevelopment())
     {
-        // Genereert automatisch /openapi/v1.json
         app.MapOpenApi();
 
-        // Nieuwe Swagger UI
         app.UseSwaggerUI(options =>
         {
             options.SwaggerEndpoint("/openapi/v1.json", "ClearSpeechAI API v1");
@@ -54,7 +57,6 @@ try
     app.UseCors("AllowFrontend");
     app.UseAuthorization();
 
-    // Controllers mappen
     app.MapControllers();
 
     app.Run();
