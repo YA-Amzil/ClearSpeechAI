@@ -1,3 +1,34 @@
-@ClearSpeechAI.API_HostAddress = http://localhost:5143
+@ClearSpeechAI.API_HostAddress = http://localhost:5000
 
 ###
+# 🔹 Health check
+GET {{ClearSpeechAI.API_HostAddress}}/api/transcription/health
+Accept: application/json
+
+###
+# 🔹 Transcribe audio (multipart/form-data)
+POST {{ClearSpeechAI.API_HostAddress}}/api/transcription/transcribe
+Content-Type: multipart/form-data
+
+--boundary
+Content-Disposition: form-data; name="audioFile"; filename="test.wav"
+Content-Type: audio/wav
+
+< ./audio/test.wav
+--boundary
+Content-Disposition: form-data; name="language"
+
+en
+--boundary
+Content-Disposition: form-data; name="responseFormat"
+
+json
+--boundary
+Content-Disposition: form-data; name="temperature"
+
+1.0
+--boundary
+Content-Disposition: form-data; name="prompt"
+
+(optional prompt text)
+--boundary--
