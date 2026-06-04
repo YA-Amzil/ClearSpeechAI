@@ -1,5 +1,7 @@
 # ClearSpeechAI
 
+🚧 **Project Status: Under Construction**  
+
 ClearSpeechAI is a audio-to-text transcription app.
 
 ---
@@ -8,10 +10,10 @@ ClearSpeechAI is a audio-to-text transcription app.
 
 ClearSpeechAI focuses on:
 
-- Experimenting with audio‑to‑text transcription  
-- Exploring Semantic Kernel’s audio processing capabilities  
-- Building a foundation for future AI‑driven speech tools  
-- Learning how to integrate LLM‑based audio workflows into .NET applications  
+- Experimenting with audio‑to‑text transcription
+- Exploring Semantic Kernel’s audio processing capabilities
+- Building a foundation for future AI‑driven speech tools
+- Learning how to integrate LLM‑based audio workflows into .NET applications
 
 ---
 
