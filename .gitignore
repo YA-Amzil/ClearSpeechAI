@@ -55,4 +55,12 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Build Results of an ATL Project
 backend/ClearSpeechAI.sln.DotSettings.user
+
+#Node modules and build output for frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.*.local
