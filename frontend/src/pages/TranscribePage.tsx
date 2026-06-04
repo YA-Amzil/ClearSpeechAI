@@ -43,7 +43,7 @@ export default function TranscribePage() {
         {/* Header */}
         <header className={styles.header}>
           <h1 className={styles.title}>ClearSpeechAI</h1>
-          <p className={styles.sub}>// audio → tekst via whisper-1</p>
+          <p className={styles.sub}>Audio naar Tekst</p>
         </header>
 
         {/* Upload */}
