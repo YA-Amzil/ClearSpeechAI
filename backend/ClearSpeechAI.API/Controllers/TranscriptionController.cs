@@ -72,7 +72,12 @@ public class TranscriptionController : ControllerBase
             checkedAt = response.ProcessedAt
         });
     }
-    
+
+    [HttpGet("health")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult Health() =>
+       Ok(new { status = "healthy", timestamp = DateTime.UtcNow });
+
     private static int GetStatusCode(string? errorMessage)
     {
         if (string.IsNullOrWhiteSpace(errorMessage))
