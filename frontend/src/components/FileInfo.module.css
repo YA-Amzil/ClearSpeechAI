@@ -1,0 +1,39 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--accent2);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+}
+.icon {
+  width: 18px;
+  height: 18px;
+  color: var(--ink2);
+  flex-shrink: 0;
+}
+.name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink);
+  font-weight: 500;
+}
+.size {
+  font-size: 11px;
+  color: var(--ink3);
+  flex-shrink: 0;
+}
+.clear {
+  background: none;
+  border: none;
+  color: var(--ink3);
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+.clear:hover { color: var(--ink); }

@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Playfair+Display:wght@500;600&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --ink: #1a1a1a;
+  --ink2: #555;
+  --ink3: #999;
+  --surface: #f8f7f4;
+  --card: #ffffff;
+  --accent2: #e8e4df;
+  --border: rgba(0, 0, 0, 0.1);
+  --green: #2d6a4f;
+  --green-bg: #d8f3dc;
+  --red: #b91c1c;
+  --red-bg: #fef2f2;
+  --radius: 12px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #f0ede8;
+    --ink2: #aaa;
+    --ink3: #666;
+    --surface: #181816;
+    --card: #242420;
+    --accent2: #2a2a26;
+    --border: rgba(255, 255, 255, 0.1);
+    --green: #74c69d;
+    --green-bg: #1b3a2a;
+    --red: #fca5a5;
+    --red-bg: #2a1515;
+  }
+}
+
+html, body, #root {
+  min-height: 100vh;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: 'DM Mono', monospace;
+}
+
+button {
+  font-family: 'DM Mono', monospace;
+  cursor: pointer;
+}
+
+select, input, textarea {
+  font-family: 'DM Mono', monospace;
+}
