@@ -22,11 +22,29 @@ public static class ServiceCollectionExtensions
         services.Configure<OpenAISettings>(
             configuration.GetSection(OpenAISettings.SectionName));
 
-        var kernel = Kernel.CreateBuilder()
-            .AddOpenAIAudioToText(
+        var kernelBuilder = Kernel.CreateBuilder();
+
+        if (!string.IsNullOrWhiteSpace(openAiSettings.BaseUrl))
+        {
+            var baseUrl = openAiSettings.BaseUrl.TrimEnd('/');
+            if (!baseUrl.EndsWith("/v1"))
+            {
+                baseUrl += "/v1";
+            }
+
+            kernelBuilder.AddOpenAIAudioToText(
                 modelId: openAiSettings.AudioToTextModel,
-                apiKey: openAiSettings.ApiKey)
-            .Build();
+                apiKey: openAiSettings.ApiKey,
+                httpClient: new HttpClient { BaseAddress = new Uri(baseUrl) });
+        }
+        else
+        {
+            kernelBuilder.AddOpenAIAudioToText(
+                modelId: openAiSettings.AudioToTextModel,
+                apiKey: openAiSettings.ApiKey);
+        }
+
+        var kernel = kernelBuilder.Build();
 
         services.AddSingleton(kernel);
         services.AddSingleton(kernel.GetRequiredService<IAudioToTextService>());
