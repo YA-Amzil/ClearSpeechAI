@@ -17,6 +17,19 @@ ClearSpeechAI focuses on:
 
 ---
 
+## ⚙️ Configuration
+
+The project uses a `.env` file in the `backend/ClearSpeechAI.API/` directory for configuration:
+
+```env
+OpenAI__ApiKey=your_api_key
+OpenAI__AudioToTextModel=whisper-1
+# Optional: Set a custom base URL for local Whisper services
+# OpenAI__BaseUrl=http://localhost:8100
+```
+
+---
+
 ## 🤝 Contributions
 
 Suggestions and ideas are welcome as the project grows.
