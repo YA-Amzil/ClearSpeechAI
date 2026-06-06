@@ -21,7 +21,6 @@ public class TranscriptionController : ControllerBase
         _logger = logger;
     }
 
-    // 🔹 POST /api/transcription/transcribe
     [HttpPost("transcribe")]
     [Consumes("multipart/form-data")]
     [RequestSizeLimit(26_214_400)]

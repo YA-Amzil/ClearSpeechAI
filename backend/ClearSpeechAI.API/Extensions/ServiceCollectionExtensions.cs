@@ -23,22 +23,30 @@ public static class ServiceCollectionExtensions
             configuration.GetSection(OpenAISettings.SectionName));
 
         var kernelBuilder = Kernel.CreateBuilder();
+        var isLocal = !string.IsNullOrWhiteSpace(openAiSettings.BaseUrl);
 
-        if (!string.IsNullOrWhiteSpace(openAiSettings.BaseUrl))
+
+        if (isLocal)
         {
-            var baseUrl = openAiSettings.BaseUrl.TrimEnd('/');
-            if (!baseUrl.EndsWith("/v1"))
-            {
+            var baseUrl = openAiSettings.BaseUrl!.TrimEnd('/');
+            if (!baseUrl.EndsWith("/v1", StringComparison.OrdinalIgnoreCase))
                 baseUrl += "/v1";
-            }
+
+            // Use placeholder API key for local AI (not validated by local servers)
+            var apiKey = string.IsNullOrWhiteSpace(openAiSettings.ApiKey)
+                ? "local-key-not-used"
+                : openAiSettings.ApiKey;
 
             kernelBuilder.AddOpenAIAudioToText(
                 modelId: openAiSettings.AudioToTextModel,
-                apiKey: openAiSettings.ApiKey,
+                apiKey: apiKey,
                 httpClient: new HttpClient { BaseAddress = new Uri(baseUrl) });
         }
         else
         {
+            if (string.IsNullOrWhiteSpace(openAiSettings.ApiKey))
+                throw new InvalidOperationException("OpenAI API key is required when BaseUrl is not set.");
+
             kernelBuilder.AddOpenAIAudioToText(
                 modelId: openAiSettings.AudioToTextModel,
                 apiKey: openAiSettings.ApiKey);

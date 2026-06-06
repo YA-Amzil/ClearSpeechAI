@@ -32,7 +32,8 @@ public class WhisperTranscriptionService : ITranscriptionService
         {
             var executionSettings = new OpenAIAudioToTextExecutionSettings(request.FileName)
             {
-                Language = request.Language,
+                Language = string.IsNullOrWhiteSpace(request.Language) ||
+                     request.Language == "auto" ? null : request.Language,
                 ResponseFormat = ResponseFormatMapper.ToOpenAI(request.ResponseFormat),
                 Temperature = request.Temperature,
                 Prompt = request.Prompt

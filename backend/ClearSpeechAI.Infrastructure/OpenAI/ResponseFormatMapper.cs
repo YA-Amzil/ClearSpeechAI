@@ -8,7 +8,7 @@ public static class ResponseFormatMapper
         format switch
         {
             ResponseFormat.Json        => "json",
-            // ResponseFormat.Text        => "plain_text",
+            ResponseFormat.Text        => "text",
             ResponseFormat.Srt         => "srt",
             ResponseFormat.VerboseJson => "verbose_json",
             ResponseFormat.Vtt         => "vtt",
