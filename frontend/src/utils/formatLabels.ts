@@ -25,6 +25,6 @@ export const FORMAT_OPTIONS = [
 export const TEMPERATURE_OPTIONS = [
   { value: "0", label: "0.0 — Accurate" },
   { value: "0.3", label: "0.3 — Balanced" },
-  { value: "0.7", label: "0.7 — creative" },
+  { value: "0.7", label: "0.7 — Creative" },
   { value: "1", label: "1.0 — Experimental" },
 ];
