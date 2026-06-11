@@ -1,5 +1,5 @@
 export const LANGUAGE_OPTIONS = [
-  { value: "auto", label: "Auto-detect" },
+  { value: "auto", label: "Auto-Detect" },
   { value: "en", label: "English" },
   { value: "fr", label: "French" },
   { value: "de", label: "German" },
@@ -16,10 +16,9 @@ export const LANGUAGE_OPTIONS = [
 
 export const FORMAT_OPTIONS = [
   { value: "json", label: "JSON" },
-  { value: "text", label: "Text" },
   { value: "srt", label: "SRT (subtitles)" },
   { value: "vtt", label: "VTT" },
-  { value: "verbose_json", label: "Verbose JSON" },
+  { value: "verbosejson", label: "Verbose JSON" },
 ];
 
 export const TEMPERATURE_OPTIONS = [

@@ -25,7 +25,7 @@ export async function transcribeAudio(
 ): Promise<TranscriptionResult> {
   const formData = new FormData()
   formData.append('audioFile', file, file.name)
-  formData.append('language', options.language === 'auto' ? '' : options.language)
+  formData.append('language', options.language)
   formData.append('responseFormat', options.responseFormat)
   formData.append('temperature', String(options.temperature))
   if (options.prompt) formData.append('prompt', options.prompt)
