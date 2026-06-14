@@ -9,18 +9,22 @@ interface Props {
 export default function FileInfo({ file, onClear }: Props) {
   return (
     <div className={styles.wrapper}>
+      {/* File icon */}
       <svg
         className={styles.icon}
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
         strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       >
-        <path
-          d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <path d="M10 13v4" />
+        <circle cx="10" cy="17" r="1" />
+        <path d="M14 13v4" />
+        <circle cx="14" cy="17" r="1" />
       </svg>
 
       <span className={styles.name}>{file.name}</span>

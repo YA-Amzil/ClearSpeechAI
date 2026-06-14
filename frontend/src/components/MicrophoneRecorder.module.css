@@ -1,0 +1,26 @@
+.btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.btn:hover {
+    background: var(--accent2);
+}
+
+.recording {
+    background: var(--red-bg);
+    border-color: var(--red);
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    color: var(--ink);
+}
