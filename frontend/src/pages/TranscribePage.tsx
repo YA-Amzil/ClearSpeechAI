@@ -9,7 +9,6 @@ import TranscriptionResult from "../components/TranscriptionResult";
 import YouTubeInput from "../components/YouTubeInput";
 import MicrophoneRecorder from "../components/MicrophoneRecorder";
 
-import { transcribeYouTube } from "../services/transcriptionService";
 import { useTranscription } from "../hooks/useTranscription";
 import { TranscriptionOptions } from "../services/transcriptionService";
 
@@ -28,9 +27,29 @@ export default function TranscribePage() {
   );
   const [options, setOptions] = useState(DEFAULT_OPTIONS);
 
-  const { state, run, reset } = useTranscription();
+  const { state, transcribeFile, transcribeYoutubeUrl, reset } =
+    useTranscription();
   const isRunning =
     state.status === "uploading" || state.status === "processing";
+
+  function switchToFile() {
+    setActiveTab("file");
+    setYoutubeUrl("");
+    reset();
+  }
+
+  function switchToYouTube() {
+    setActiveTab("youtube");
+    setFile(null);
+    reset();
+  }
+
+  function switchToRecord() {
+    setActiveTab("record");
+    setFile(null);
+    setYoutubeUrl("");
+    reset();
+  }
 
   function handleFile(f: File) {
     setFile(f);
@@ -43,17 +62,18 @@ export default function TranscribePage() {
     reset();
   }
 
-  async function handleYouTubeSubmit() {
-    if (!youtubeUrl.trim()) return;
+  async function handleSubmit() {
     reset();
-    const result = await transcribeYouTube(youtubeUrl, options);
-    state.result = result;
-    state.status = result.success ? "done" : "error";
-  }
 
-  function handleSubmit() {
-    if (!file) return;
-    run(file, options);
+    if (activeTab === "file" && file) {
+      await transcribeFile(file, options);
+      return;
+    }
+
+    if (activeTab === "youtube" && youtubeUrl.trim()) {
+      await transcribeYoutubeUrl(youtubeUrl, options);
+      return;
+    }
   }
 
   return (
@@ -85,7 +105,7 @@ export default function TranscribePage() {
           {/* FILE TAB */}
           <button
             className={`${styles.tab} ${activeTab === "file" ? styles.active : ""}`}
-            onClick={() => setActiveTab("file")}
+            onClick={switchToFile}
           >
             <svg
               className={styles.tabIcon}
@@ -105,7 +125,7 @@ export default function TranscribePage() {
           {/* YOUTUBE TAB */}
           <button
             className={`${styles.tab} ${activeTab === "youtube" ? styles.active : ""}`}
-            onClick={() => setActiveTab("youtube")}
+            onClick={switchToYouTube}
           >
             <svg
               className={styles.tabIcon}
@@ -121,7 +141,7 @@ export default function TranscribePage() {
           {/* RECORD TAB */}
           <button
             className={`${styles.tab} ${activeTab === "record" ? styles.active : ""}`}
-            onClick={() => setActiveTab("record")}
+            onClick={switchToRecord}
           >
             <svg
               className={styles.tabIcon}
@@ -143,22 +163,15 @@ export default function TranscribePage() {
 
         {/* Active tab content */}
         <section className={styles.card}>
-          {activeTab === "file" && (
-            <>
-              {file ? (
-                <FileInfo file={file} onClear={handleClear} />
-              ) : (
-                <DropZone onFile={handleFile} />
-              )}
-            </>
-          )}
+          {activeTab === "file" &&
+            (file ? (
+              <FileInfo file={file} onClear={handleClear} />
+            ) : (
+              <DropZone onFile={handleFile} />
+            ))}
 
           {activeTab === "youtube" && (
-            <YouTubeInput
-              url={youtubeUrl}
-              onChange={setYoutubeUrl}
-              onSubmit={handleYouTubeSubmit}
-            />
+            <YouTubeInput url={youtubeUrl} onChange={setYoutubeUrl} />
           )}
 
           {activeTab === "record" && (
@@ -175,7 +188,11 @@ export default function TranscribePage() {
             options={options}
             onChange={setOptions}
             onSubmit={handleSubmit}
-            disabled={isRunning || (!file && !youtubeUrl)}
+            disabled={
+              isRunning ||
+              (activeTab === "file" && !file) ||
+              (activeTab === "youtube" && !youtubeUrl.trim())
+            }
           />
         </section>
 
@@ -188,7 +205,7 @@ export default function TranscribePage() {
         <StatusBar status={state.status} />
 
         {/* Result */}
-        {state.status === "done" && state.result && (
+        {state.result && (
           <TranscriptionResult
             result={state.result}
             elapsedSeconds={state.elapsedSeconds}

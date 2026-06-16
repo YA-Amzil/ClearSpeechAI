@@ -24,7 +24,6 @@ public class TranscriptionController : ControllerBase
     }
 
     [HttpPost("transcribe")]
-    [Consumes("multipart/form-data")]
     [RequestSizeLimit(26_214_400)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -75,7 +74,6 @@ public class TranscriptionController : ControllerBase
     }
 
     [HttpPost("youtube")]
-    [Consumes("application/x-www-form-urlencoded")]    
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status402PaymentRequired)]
     [ProducesResponseType(StatusCodes.Status429TooManyRequests)]

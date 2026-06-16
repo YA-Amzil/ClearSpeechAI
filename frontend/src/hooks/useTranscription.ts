@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import {
   transcribeAudio,
+  transcribeYouTube,
   TranscriptionOptions,
   TranscriptionResult,
 } from "../services/transcriptionService";
@@ -26,9 +27,10 @@ export function useTranscription() {
     error: null,
     elapsedSeconds: null,
   });
+
   const abortRef = useRef<AbortController | null>(null);
 
-  async function run(file: File, options: TranscriptionOptions) {
+  function startNewJob() {
     abortRef.current?.abort();
     abortRef.current = new AbortController();
 
@@ -38,16 +40,19 @@ export function useTranscription() {
       error: null,
       elapsedSeconds: null,
     });
+
+    return abortRef.current.signal;
+  }
+
+  async function transcribeFile(file: File, options: TranscriptionOptions) {
+    const signal = startNewJob();
     const start = Date.now();
 
     try {
       setState((s) => ({ ...s, status: "processing" }));
-      const result = await transcribeAudio(
-        file,
-        options,
-        abortRef.current.signal,
-      );
-      const elapsed = parseFloat(((Date.now() - start) / 1000).toFixed(1));
+
+      const result = await transcribeAudio(file, options, signal);
+      const elapsed = Number(((Date.now() - start) / 1000).toFixed(1));
 
       if (result.success) {
         setState({
@@ -64,12 +69,51 @@ export function useTranscription() {
           elapsedSeconds: null,
         });
       }
-    } catch (err: unknown) {
-      if ((err as Error).name === "CanceledError") return;
+    } catch (err: any) {
+      if (err.name === "CanceledError") return;
+
       setState({
         status: "error",
         result: null,
-        error: (err as Error).message,
+        error: err.message,
+        elapsedSeconds: null,
+      });
+    }
+  }
+
+  async function transcribeYoutubeUrl(
+    url: string,
+    options: TranscriptionOptions,
+  ) {
+    const signal = startNewJob();
+    const start = Date.now();
+
+    try {
+      setState((s) => ({ ...s, status: "processing" }));
+
+      const result = await transcribeYouTube(url, options);
+      const elapsed = Number(((Date.now() - start) / 1000).toFixed(1));
+
+      if (result.success) {
+        setState({
+          status: "done",
+          result,
+          error: null,
+          elapsedSeconds: elapsed,
+        });
+      } else {
+        setState({
+          status: "error",
+          result: null,
+          error: result.errorMessage ?? "Unknown error",
+          elapsedSeconds: null,
+        });
+      }
+    } catch (err: any) {
+      setState({
+        status: "error",
+        result: null,
+        error: err.message,
         elapsedSeconds: null,
       });
     }
@@ -85,5 +129,10 @@ export function useTranscription() {
     });
   }
 
-  return { state, run, reset };
+  return {
+    state,
+    transcribeFile,
+    transcribeYoutubeUrl,
+    reset,
+  };
 }
