@@ -46,7 +46,7 @@ export async function transcribeYouTube(
   options?: Partial<TranscriptionOptions>,
 ): Promise<TranscriptionResult> {
   const formData = new FormData();
-  formData.append("Url", url);
+  formData.append("url", url);
   formData.append("language", options?.language ?? "auto");
   formData.append("responseFormat", options?.responseFormat ?? "json");
   formData.append("temperature", String(options?.temperature ?? 0));

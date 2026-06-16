@@ -33,18 +33,21 @@ export default function TranscribePage() {
     state.status === "uploading" || state.status === "processing";
 
   function switchToFile() {
+    if (isRunning) return;
     setActiveTab("file");
     setYoutubeUrl("");
     reset();
   }
 
   function switchToYouTube() {
+    if (isRunning) return;
     setActiveTab("youtube");
     setFile(null);
     reset();
   }
 
   function switchToRecord() {
+    if (isRunning) return;
     setActiveTab("record");
     setFile(null);
     setYoutubeUrl("");
@@ -52,17 +55,21 @@ export default function TranscribePage() {
   }
 
   function handleFile(f: File) {
+    if (isRunning) return;
     setFile(f);
     setYoutubeUrl("");
     reset();
   }
 
   function handleClear() {
+    if (isRunning) return;
     setFile(null);
     reset();
   }
 
   async function handleSubmit() {
+    if (isRunning) return;
+
     reset();
 
     if (activeTab === "file" && file) {
@@ -74,6 +81,8 @@ export default function TranscribePage() {
       await transcribeYoutubeUrl(youtubeUrl, options);
       return;
     }
+
+    // record-tab wordt afgehandeld in MicrophoneRecorder zelf
   }
 
   return (
@@ -104,8 +113,9 @@ export default function TranscribePage() {
         <div className={styles.tabs}>
           {/* FILE TAB */}
           <button
-            className={`${styles.tab} ${activeTab === "file" ? styles.active : ""}`}
+            className={`${styles.tab} ${styles.firstTab} ${activeTab === "file" ? styles.active : ""}`}
             onClick={switchToFile}
+            disabled={isRunning}
           >
             <svg
               className={styles.tabIcon}
@@ -126,6 +136,7 @@ export default function TranscribePage() {
           <button
             className={`${styles.tab} ${activeTab === "youtube" ? styles.active : ""}`}
             onClick={switchToYouTube}
+            disabled={isRunning}
           >
             <svg
               className={styles.tabIcon}
@@ -140,8 +151,9 @@ export default function TranscribePage() {
 
           {/* RECORD TAB */}
           <button
-            className={`${styles.tab} ${activeTab === "record" ? styles.active : ""}`}
+            className={`${styles.tab} ${styles.lastTab} ${activeTab === "record" ? styles.active : ""}`}
             onClick={switchToRecord}
+            disabled={isRunning}
           >
             <svg
               className={styles.tabIcon}

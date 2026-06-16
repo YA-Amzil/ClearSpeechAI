@@ -47,16 +47,18 @@
   margin-top: 4px;
 }
 
-/* Tabs */
+/* ==========================================================================
+   TABS CONTAINER
+   ========================================================================== */
 .tabs {
   display: flex;
   justify-content: space-between;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--surface);
-  box-shadow: inset 0 0 0 0.5px var(--border);
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
 }
 
+/* Algemene tab styling (Geldt voor ALLE knoppen) */
 .tab {
   flex: 1;
   text-align: center;
@@ -65,41 +67,124 @@
   font-weight: 500;
   color: var(--ink3);
   background: var(--surface);
-  border: none;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: background 0.2s ease, color 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  border-radius: 0;
+
+  /* Basis randen voor de knoppen */
+  border-top: 0.5px solid var(--border);
+  border-bottom: 0.5px solid var(--border);
+  border-left: none;
+  border-right: none;
+  margin: 0;
+  box-sizing: border-box;
+  /* Zorgt dat de padding en border netjes binnen de hoogte vallen */
+}
+
+/* De middelste knop (YouTube) heeft subtiele zijlijntjes nodig om de knoppen te scheiden */
+.tab:not(.firstTab):not(.lastTab) {
+  border-left: 0.5px solid var(--border);
+  border-right: 0.5px solid var(--border);
+}
+
+/* EERSTE BUTTON SPECIFIEK (Alleen links afgerond en linker-rand toevoegen) */
+.firstTab {
+  border-left: 0.5px solid var(--border) !important;
+  border-top-left-radius: var(--radius-lg, 8px) !important;
+  border-bottom-left-radius: var(--radius-lg, 8px) !important;
+}
+
+/* LAATSTE BUTTON SPECIFIEK (Alleen rechts afgerond en rechter-rand toevoegen) */
+.lastTab {
+  border-right: 0.5px solid var(--border) !important;
+  border-top-right-radius: var(--radius-lg, 8px) !important;
+  border-bottom-right-radius: var(--radius-lg, 8px) !important;
 }
 
 .tab svg {
   width: 18px;
   height: 18px;
   color: var(--ink3);
-  transition: color 0.25s ease;
+  transition: all 0.25s ease;
 }
 
+.tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   TABS STATUS LOGICA (ACTIVE & HOVER) WITH YOUTUBE CONTRAST FIX
+   ========================================================================== */
+
+/* Actieve tab status */
 .tab.active {
-  background: var(--ink);
-  color: var(--surface);
-  box-shadow: inset 0 -2px 0 var(--accent2);
-  transform: scale(1.02);
+  background: var(--ink) !important;
+  color: var(--surface) !important;
+
+  /* FIX: Geen box-shadow of transform scale meer, dat veroorzaakte het glitchende streepje! */
+  box-shadow: none !important;
+  transform: none !important;
+
+  /* FIX: Een solide, dikkere onderrand die NOOIT kan kieren of losraken */
+  border-bottom: 3px solid var(--accent2) !important;
+  border-top: 0.5px solid var(--ink) !important;
+
+  /* Zorgt dat de padding gecorrigeerd wordt voor de dikkere onderrand zodat de knop even hoog blijft */
+  padding-bottom: 9.5px;
+  z-index: 2;
 }
 
+/* Als de eerste of laatste tab actief is, herstellen we de zijkant-kleur naar donker */
+.firstTab.active {
+  border-left: 0.5px solid var(--ink) !important;
+}
+
+.lastTab.active {
+  border-right: 0.5px solid var(--ink) !important;
+}
+
+/* Standaard icoon-gedrag bij actief (File en Record worden wit) */
 .tab.active svg {
-  color: var(--surface);
+  color: var(--surface) !important;
 }
 
+/* ACTIEVE FIX VOOR YOUTUBE */
+.tab.active svg path:first-child {
+  fill: var(--surface) !important;
+}
+
+.tab.active svg path:last-child {
+  fill: var(--ink) !important;
+}
+
+/* Hover status (alleen als de tab NIET actief is) */
 .tab:hover:not(.active) {
   background: var(--accent2);
   color: var(--ink);
 }
 
+/* Hover effect voor de standaard lijn-iconen */
 .tab:hover:not(.active) svg {
-  color: var(--ink);
+  color: var(--ink) !important;
 }
+
+/* YouTube Schild (buitenkant) bij hover */
+.tab:hover:not(.active) svg path:first-child {
+  fill: var(--ink) !important;
+}
+
+/* YouTube Driehoek (binnenkant) bij hover */
+.tab:hover:not(.active) svg path:last-child {
+  fill: var(--accent2) !important;
+}
+
+/* ========================================================================== */
 
 /* Card wrapper */
 .card {
@@ -142,13 +227,28 @@
 
   .tabs {
     flex-direction: column;
+    gap: 0;
   }
 
   .tab {
-    border-bottom: 0.5px solid var(--border);
+    border: 0.5px solid var(--border);
+    border-top: none;
+    border-radius: 0 !important;
+  }
+
+  /* Responsive hoeken voor mobiel als ze onder elkaar staan */
+  .firstTab {
+    border-top: 0.5px solid var(--border) !important;
+    border-radius: var(--radius-lg, 8px) var(--radius-lg, 8px) 0 0 !important;
+  }
+
+  .lastTab {
+    border-radius: 0 0 var(--radius-lg, 8px) var(--radius-lg, 8px) !important;
   }
 
   .tab.active {
     transform: none;
+    border-bottom: 3px solid var(--accent2) !important;
+    padding-bottom: 9.5px;
   }
 }
