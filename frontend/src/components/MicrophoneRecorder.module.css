@@ -1,26 +1,152 @@
-.btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 12px;
-    border-radius: 50%;
-    display: inline-flex;
+/* WRAPPER */
+.wrapper {
+    display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    transition: background 0.2s, border-color 0.2s;
+    height: 320px;
+    width: 100%;
+    background: #0a0a0a;
+    border-radius: 16px;
+    position: relative;
+    overflow: hidden;
 }
 
-.btn:hover {
-    background: var(--accent2);
+/* CENTER CONTENT */
+.centerBox {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
 }
 
-.recording {
-    background: var(--red-bg);
-    border-color: var(--red);
+/* HEADER TEXT */
+.recordHeader {
+    font-size: 20px;
+    font-weight: 700;
+    color: #00ff88;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.7);
+    margin-bottom: 24px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+/* MICROPHONE BUTTON */
+.btn {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 2px solid #333;
+    background: radial-gradient(circle at center, #111 60%, #000 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 3;
 }
 
 .icon {
-    width: 20px;
-    height: 20px;
-    color: var(--ink);
+    width: 48px;
+    height: 48px;
+    color: #fff;
+}
+
+/* STATES */
+.idle {
+    border-color: #333;
+}
+
+.listening {
+    border-color: #00ff88;
+    box-shadow: 0 0 25px 8px rgba(0, 255, 136, 0.4);
+    animation: pulseGreen 1.5s infinite;
+}
+
+.recording {
+    border-color: #ff3355;
+    box-shadow: 0 0 25px 8px rgba(255, 51, 85, 0.4);
+    animation: pulseRed 1.5s infinite;
+}
+
+/* VISUALIZER BARS */
+.visualizer {
+    display: flex;
+    gap: 8px;
+    margin-top: 22px;
+    height: 80px;
+    align-items: flex-end;
+}
+
+.bar {
+    width: 8px;
+    border-radius: 999px;
+    background: #00ff88;
+    transition: height 0.1s ease-out;
+}
+
+/* RIPPLE EFFECT BEHIND MICROPHONE */
+.ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(0, 255, 136, 0.15) 0%, transparent 70%);
+    opacity: 0;
+    z-index: 1;
+}
+
+.activeRipple {
+    animation: rippleExpand 2s infinite ease-out;
+    opacity: 1;
+}
+
+@keyframes rippleExpand {
+    0% {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0.4;
+    }
+
+    70% {
+        transform: translate(-50%, -50%) scale(1.4);
+        opacity: 0.1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1.6);
+        opacity: 0;
+    }
+}
+
+/* PULSE ANIMATIONS */
+@keyframes pulseGreen {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 20px 10px rgba(0, 255, 136, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 255, 136, 0);
+    }
+}
+
+@keyframes pulseRed {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 51, 85, 0.5);
+    }
+
+    70% {
+        box-shadow: 0 0 20px 10px rgba(255, 51, 85, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 51, 85, 0);
+    }
 }

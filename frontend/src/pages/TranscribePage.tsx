@@ -10,6 +10,7 @@ import YouTubeInput from "../components/YouTubeInput";
 import MicrophoneRecorder from "../components/MicrophoneRecorder";
 
 import { useTranscription } from "../hooks/useTranscription";
+import { useRecorder } from "../hooks/useRecorder";
 import { TranscriptionOptions } from "../services/transcriptionService";
 
 const DEFAULT_OPTIONS: TranscriptionOptions = {
@@ -22,15 +23,13 @@ const DEFAULT_OPTIONS: TranscriptionOptions = {
 export default function TranscribePage() {
   const [file, setFile] = useState<File | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState("");
-  const [activeTab, setActiveTab] = useState<"file" | "youtube" | "record">(
-    "file",
-  );
+  const [activeTab, setActiveTab] = useState<"file" | "youtube" | "record">("file",);
   const [options, setOptions] = useState(DEFAULT_OPTIONS);
 
-  const { state, transcribeFile, transcribeYoutubeUrl, reset } =
-    useTranscription();
-  const isRunning =
-    state.status === "uploading" || state.status === "processing";
+  const { state, transcribeFile, transcribeYoutubeUrl, transcribeAudioBlob, reset } = useTranscription();
+  const recorder = useRecorder();
+
+  const isRunning = state.status === "uploading" || state.status === "processing";
 
   function switchToFile() {
     if (isRunning) return;
@@ -82,7 +81,10 @@ export default function TranscribePage() {
       return;
     }
 
-    // record-tab wordt afgehandeld in MicrophoneRecorder zelf
+    if (activeTab === "record" && recorder.recordedBlob) {
+      await transcribeAudioBlob(recorder.recordedBlob, options);
+      return;
+    }
   }
 
   return (
@@ -187,10 +189,13 @@ export default function TranscribePage() {
           )}
 
           {activeTab === "record" && (
-            <>
-              <label className={styles.label}>Record Audio</label>
-              <MicrophoneRecorder />
-            </>
+              <MicrophoneRecorder
+                startRecording={recorder.startRecording}
+                stopRecording={recorder.stopRecording}
+                isRecording={recorder.isRecording}
+                isListening={recorder.isListening}
+                levels={recorder.levels}
+              />
           )}
         </section>
 
@@ -203,7 +208,8 @@ export default function TranscribePage() {
             disabled={
               isRunning ||
               (activeTab === "file" && !file) ||
-              (activeTab === "youtube" && !youtubeUrl.trim())
+              (activeTab === "youtube" && !youtubeUrl.trim()) ||
+              (activeTab === "record" && !recorder.recordedBlob)
             }
           />
         </section>

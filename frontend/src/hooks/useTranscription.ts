@@ -81,6 +81,18 @@ export function useTranscription() {
     }
   }
 
+  async function transcribeAudioBlob(
+    blob: Blob,
+    options: TranscriptionOptions,
+  ) {
+    const file = new File([blob], "recording.webm", {
+      type: "audio/webm",
+      lastModified: Date.now(),
+    });
+
+    await transcribeFile(file, options);
+  }
+
   async function transcribeYoutubeUrl(
     url: string,
     options: TranscriptionOptions,
@@ -132,6 +144,7 @@ export function useTranscription() {
   return {
     state,
     transcribeFile,
+    transcribeAudioBlob,
     transcribeYoutubeUrl,
     reset,
   };
