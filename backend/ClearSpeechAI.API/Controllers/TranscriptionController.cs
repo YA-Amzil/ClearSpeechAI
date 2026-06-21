@@ -24,14 +24,14 @@ public class TranscriptionController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost("transcribe")]
+    [HttpPost("audiofile")]
     [RequestSizeLimit(26_214_400)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status402PaymentRequired)]
     [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> TranscribeAsync(
+    public async Task<IActionResult> TranscribeAudiofileAsync(
         [FromForm] TranscribeRequestModel model,
         CancellationToken cancellationToken)
     {
@@ -168,6 +168,55 @@ public class TranscriptionController : ControllerBase
                 error = "Failed to process YouTube video."
             });
         }
+    }
+
+    [HttpPost("spreakrecord")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status402PaymentRequired)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> TranscribeSpeechRecordAsync(
+    [FromForm] TranscribeRequestModel model,
+    CancellationToken cancellationToken)
+    {
+        using var memoryStream = new MemoryStream();
+        await model.AudioFile.CopyToAsync(memoryStream, cancellationToken);
+
+        var request = new TranscriptionRequest
+        {
+            FileName = model.AudioFile.FileName,
+            AudioData = memoryStream.ToArray(),
+            Language = model.Language,
+            ResponseFormat = model.ResponseFormat,
+            Temperature = model.Temperature,
+            Prompt = model.Prompt
+        };
+
+        var response = await _transcriptionService.TranscribeAsync(request, cancellationToken);
+
+        if (!response.Success)
+        {
+            _logger.LogWarning("Speech recorder transcription failed — {Error}", response.ErrorMessage);
+            return StatusCode(GetStatusCode(response.ErrorMessage), new
+            {
+                success = false,
+                verified = false,
+                error = response.ErrorMessage,
+                checkedAt = response.ProcessedAt
+            });
+        }
+
+        return Ok(new
+        {
+            success = true,
+            verified = true,
+            message = "Speech recorder transcription completed successfully.",
+            text = response.Text,
+            language = response.Language,
+            format = response.Format,
+            checkedAt = response.ProcessedAt
+        });
     }
 
     [HttpGet("health")]

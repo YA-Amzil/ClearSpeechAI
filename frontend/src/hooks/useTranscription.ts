@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import {
   transcribeAudio,
   transcribeYouTube,
+  transcribeSpeechRecording,
   TranscriptionOptions,
   TranscriptionResult,
 } from "../services/transcriptionService";
@@ -44,6 +45,9 @@ export function useTranscription() {
     return abortRef.current.signal;
   }
 
+  // ---------------------------------------------------------
+  // FILE UPLOAD
+  // ---------------------------------------------------------
   async function transcribeFile(file: File, options: TranscriptionOptions) {
     const signal = startNewJob();
     const start = Date.now();
@@ -81,18 +85,9 @@ export function useTranscription() {
     }
   }
 
-  async function transcribeAudioBlob(
-    blob: Blob,
-    options: TranscriptionOptions,
-  ) {
-    const file = new File([blob], "recording.webm", {
-      type: "audio/webm",
-      lastModified: Date.now(),
-    });
-
-    await transcribeFile(file, options);
-  }
-
+  // ---------------------------------------------------------
+  // YOUTUBE URL
+  // ---------------------------------------------------------
   async function transcribeYoutubeUrl(
     url: string,
     options: TranscriptionOptions,
@@ -103,7 +98,7 @@ export function useTranscription() {
     try {
       setState((s) => ({ ...s, status: "processing" }));
 
-      const result = await transcribeYouTube(url, options);
+      const result = await transcribeYouTube(url, options, signal);
       const elapsed = Number(((Date.now() - start) / 1000).toFixed(1));
 
       if (result.success) {
@@ -122,6 +117,8 @@ export function useTranscription() {
         });
       }
     } catch (err: any) {
+      if (err.name === "CanceledError") return;
+
       setState({
         status: "error",
         result: null,
@@ -131,6 +128,57 @@ export function useTranscription() {
     }
   }
 
+  // ---------------------------------------------------------
+  // MICROPHONE RECORDING
+  // ---------------------------------------------------------
+  async function transcribeAudioBlob(
+    blob: Blob,
+    options: TranscriptionOptions,
+  ) {
+    const signal = startNewJob();
+    const start = Date.now();
+
+    try {
+      setState((s) => ({ ...s, status: "processing" }));
+
+      const file = new File([blob], "recording.webm", {
+        type: "audio/webm",
+        lastModified: Date.now(),
+      });
+
+      const result = await transcribeSpeechRecording(file, options, signal);
+      const elapsed = Number(((Date.now() - start) / 1000).toFixed(1));
+
+      if (result.success) {
+        setState({
+          status: "done",
+          result,
+          error: null,
+          elapsedSeconds: elapsed,
+        });
+      } else {
+        setState({
+          status: "error",
+          result: null,
+          error: result.errorMessage ?? "Unknown error",
+          elapsedSeconds: null,
+        });
+      }
+    } catch (err: any) {
+      if (err.name === "CanceledError") return;
+
+      setState({
+        status: "error",
+        result: null,
+        error: err.message,
+        elapsedSeconds: null,
+      });
+    }
+  }
+
+  // ---------------------------------------------------------
+  // RESET
+  // ---------------------------------------------------------
   function reset() {
     abortRef.current?.abort();
     setState({

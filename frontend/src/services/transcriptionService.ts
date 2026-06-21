@@ -33,7 +33,7 @@ export async function transcribeAudio(
   if (options.prompt) formData.append("prompt", options.prompt);
 
   const response = await axios.post<TranscriptionResult>(
-    `${BASE_URL}/api/transcription/transcribe`,
+    `${BASE_URL}/api/transcription/audiofile`,
     formData,
     { signal },
   );
@@ -44,6 +44,7 @@ export async function transcribeAudio(
 export async function transcribeYouTube(
   url: string,
   options?: Partial<TranscriptionOptions>,
+  signal?: AbortSignal,
 ): Promise<TranscriptionResult> {
   const formData = new FormData();
   formData.append("url", url);
@@ -55,26 +56,30 @@ export async function transcribeYouTube(
   const response = await axios.post<TranscriptionResult>(
     `${BASE_URL}/api/transcription/youtube`,
     formData,
+    { signal },
   );
 
   return response.data;
 }
 
-export async function uploadRecording(
-  blob: Blob,
-  options?: Partial<TranscriptionOptions>,
-): Promise<TranscriptionResult> {
+export async function transcribeSpeechRecording(
+  file: File,
+  options: TranscriptionOptions,
+  signal?: AbortSignal,
+) {
   const formData = new FormData();
-  formData.append("audioFile", blob, "recording.webm");
-  formData.append("language", options?.language ?? "auto");
-  formData.append("responseFormat", options?.responseFormat ?? "json");
-  formData.append("temperature", String(options?.temperature ?? 0));
-  if (options?.prompt) formData.append("prompt", options.prompt);
+  formData.append("audioFile", file);
+  formData.append("language", options.language);
+  formData.append("responseFormat", options.responseFormat);
+  formData.append("temperature", String(options.temperature));
+  if (options.prompt) formData.append("prompt", options.prompt);
 
-  const response = await axios.post<TranscriptionResult>(
-    `${BASE_URL}/api/transcription/transcribe`,
+  const response = await axios.post(
+    `${BASE_URL}/api/transcription/spreakrecord`,
     formData,
+    { signal },
   );
 
   return response.data;
 }
+
